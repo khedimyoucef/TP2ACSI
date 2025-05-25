@@ -3,6 +3,7 @@ package org.creche;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 
 import com.google.gson.Gson;
 
@@ -24,10 +25,9 @@ public class App {
         staticFiles.location("/public");
 
         Connection conn = DriverManager.getConnection(
-            "jdbc:mysql://localhost:3306/creche_db?useSSL=false",
-            "root",
-            "12345678"
-        );
+                "jdbc:mysql://localhost:3306/creche_db?useSSL=false",
+                "root",
+                "12345678");
 
         userDao = new UserDao(conn);
         childDao = new ChildDao(conn);
@@ -70,7 +70,18 @@ public class App {
                 return "Invalid credentials";
             }
         });
-
+        get("/api/my-children", (req, res) -> {
+            User user = req.session().attribute("user");
+            if (user == null) {
+                res.status(401);
+                return "Unauthorized";
+            }
+        
+            List<Child> children = childDao.findByUserId(user.getId()); // or getChildrenByUserId
+            res.type("application/json");
+            return new Gson().toJson(children);
+        });
+        
         // Logout
         get("/logout", (req, res) -> {
             req.session().invalidate();

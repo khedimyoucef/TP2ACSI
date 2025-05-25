@@ -6,16 +6,34 @@
 </head>
 <body>
     <h1>Soumettre une demande d'admission</h1>
-    <form method="POST" action="/admissions">
+    <form method="POST" action="/api/admissions">
         <p>Confirmez la demande d'admission pour votre/vos enfant(s).</p>
-        <!-- You can populate children dynamically -->
-        <label>Choisir un enfant :</label><br/>
-        <select name="child_id" required>
-            <!-- Example static options -->
-            <!-- <option value="1">Jean Dupont</option> -->
+        <label for="childSelect">Choisir un enfant :</label><br/>
+        <select name="child_id" id="childSelect" required>
+            <option value="" disabled selected>-- Sélectionnez un enfant --</option>
         </select><br/><br/>
         <button type="submit">Soumettre la demande</button>
     </form>
     <p><a href="/dashboard.html">Retour au tableau de bord</a></p>
+
+    <script>
+        fetch("/api/my-children")
+          .then(res => {
+            if (!res.ok) throw new Error("Non autorisé");
+            return res.json();
+          })
+          .then(children => {
+            const select = document.getElementById("childSelect");
+            children.forEach(child => {
+              const opt = document.createElement("option");
+              opt.value = child.id;
+              opt.textContent = `${child.name} (né le ${child.birthdate})`;
+              select.appendChild(opt);
+            });
+          })
+          .catch(err => {
+            alert("Erreur: " + err.message);
+          });
+    </script>
 </body>
 </html>
