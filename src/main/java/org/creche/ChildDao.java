@@ -47,6 +47,26 @@ public class ChildDao {
         return children;
     }
 
+    public Child findById(int id) throws SQLException {
+        String sql = "SELECT * FROM children WHERE id = ?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            Child c = new Child();
+            c.setId(rs.getInt("id"));
+            c.setUserId(rs.getInt("user_id"));
+            c.setName(rs.getString("name"));
+            c.setBirthdate(rs.getString("birthdate"));
+            c.setAllergies(rs.getString("allergies"));
+            c.setSpecialNeeds(rs.getString("special_needs"));
+            ps.close();
+            return c;
+        }
+        ps.close();
+        return null;
+    }
+    
     
 
 }

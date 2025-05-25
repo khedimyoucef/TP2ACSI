@@ -40,4 +40,23 @@ public class UserDao {
         ps.close();
         return null;
     }
+
+    public User findById(int id) throws SQLException {
+        String sql = "SELECT * FROM users WHERE id = ?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            User u = new User();
+            u.setId(rs.getInt("id"));
+            u.setUsername(rs.getString("username"));
+            u.setPasswordHash(rs.getString("password_hash"));
+            u.setRole(rs.getString("role"));
+            ps.close();
+            return u;
+        }
+        ps.close();
+        return null;
+    }
+
 }

@@ -3,7 +3,10 @@ package org.creche;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.Gson;
 
@@ -56,32 +59,40 @@ public class App {
         });
 
         // User Login
+        // User Login
         post("/login", (req, res) -> {
             String username = req.queryParams("username");
             String password = req.queryParams("password");
             User user = userDao.findByUsername(username);
+
             if (user != null && user.checkPassword(password)) {
                 Session session = req.session(true);
                 session.attribute("user", user);
-                res.redirect("/dashboard.html");
+
+                if ("admin".equals(user.getRole())) {
+                    res.redirect("/admin_dashboard.html");
+                } else {
+                    res.redirect("/dashboard.html");
+                }
                 return "";
             } else {
                 res.status(401);
                 return "Invalid credentials";
             }
         });
+
         get("/api/my-children", (req, res) -> {
             User user = req.session().attribute("user");
             if (user == null) {
                 res.status(401);
                 return "Unauthorized";
             }
-        
+
             List<Child> children = childDao.findByUserId(user.getId()); // or getChildrenByUserId
             res.type("application/json");
             return new Gson().toJson(children);
         });
-        
+
         // Logout
         get("/logout", (req, res) -> {
             req.session().invalidate();
@@ -143,12 +154,16 @@ public class App {
                 res.status(401);
                 return "Not logged in";
             }
-            Admission admission = new Admission(user.getId(), "pending");
+
+            int childId = Integer.parseInt(req.queryParams("child_id"));
+
+            Admission admission = new Admission(user.getId(), childId, "pending");
             admissionDao.save(admission);
             res.redirect("/dashboard.html");
             return "";
         });
 
+        // Admin: List admissions
         // Admin: List admissions
         get("/api/admissions", (req, res) -> {
             User user = req.session().attribute("user");
@@ -156,9 +171,14 @@ public class App {
                 res.status(403);
                 return "Access denied";
             }
+        
+            List<Map<String, Object>> enriched = admissionDao.findAllWithDetails();
+        
             res.type("application/json");
-            return gson.toJson(admissionDao.findAll());
+            System.out.println("********************Enriched admissions: ********************" + enriched);
+            return gson.toJson(enriched);
         });
+        
 
         // Admin: Approve admission
         post("/api/admissions/:id/approve", (req, res) -> {
