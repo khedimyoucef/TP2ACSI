@@ -92,5 +92,19 @@ public class AdmissionDao {
         ps.executeUpdate();
         ps.close();
     }
+    public String getEmailByAdmissionId(int admissionId) {
+        String email = null;
+        String query = "SELECT u.email FROM admissions a JOIN users u ON a.user_id = u.id WHERE a.id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, admissionId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                email = rs.getString("email");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return email;
+    }
     
 }

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 import com.google.gson.Gson;
 
 import spark.Session;
@@ -180,6 +181,7 @@ public class App {
             System.out.println("********************Enriched admissions: ********************" + enriched);
             return gson.toJson(enriched);
         });
+        EmailService emailService = new EmailService();
 
         // Admin: Approve admission
         post("/api/admissions/:id/approve", (req, res) -> {
@@ -188,11 +190,23 @@ public class App {
                 res.status(403);
                 return "Access denied";
             }
+        
             int admissionId = Integer.parseInt(req.params("id"));
             admissionDao.updateStatus(admissionId, "approved");
+        
+            String email = admissionDao.getEmailByAdmissionId(admissionId);
+            if (email != null) {
+                try {
+                    emailService.sendEmail(email, "Admission Approved", "Congratulations! Your admission has been approved.");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        
             res.redirect("/admin_dashboard.html");
             return "";
         });
+        
         // Admin: Delete admission
         post("/api/admissions/:id/delete", (req, res) -> {
             User user = req.session().attribute("user");
@@ -200,13 +214,24 @@ public class App {
                 res.status(403);
                 return "Access denied";
             }
-
+        
             int admissionId = Integer.parseInt(req.params("id"));
+            String email = admissionDao.getEmailByAdmissionId(admissionId);
+        
             admissionDao.delete(admissionId);
+        
+            if (email != null) {
+                try {
+                    emailService.sendEmail(email, "Admission Deleted", "Your admission request has been deleted by the admin.");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        
             res.redirect("/admin_dashboard.html");
             return "";
         });
-
+        
         // Admin: Reject admission
         post("/api/admissions/:id/reject", (req, res) -> {
             User user = req.session().attribute("user");
@@ -214,12 +239,23 @@ public class App {
                 res.status(403);
                 return "Access denied";
             }
-
+        
             int admissionId = Integer.parseInt(req.params("id"));
             admissionDao.updateStatus(admissionId, "rejected");
+        
+            String email = admissionDao.getEmailByAdmissionId(admissionId);
+            if (email != null) {
+                try {
+                    emailService.sendEmail(email, "Admission Rejected", "We regret to inform you that your admission has been rejected.");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        
             res.redirect("/admin_dashboard.html");
             return "";
         });
+        
 
         // Update child information
         patch("/api/children/:id", (req, res) -> {

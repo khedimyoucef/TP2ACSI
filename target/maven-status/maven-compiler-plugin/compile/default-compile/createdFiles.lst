@@ -3,6 +3,8 @@ org/creche/ChildDao.class
 org/creche/User.class
 org/creche/App.class
 org/creche/UserDao.class
+org/creche/EmailService$1.class
 org/creche/AuthFilter.class
 org/creche/AdmissionDao.class
+org/creche/EmailService.class
 org/creche/Child.class

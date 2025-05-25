@@ -13,30 +13,35 @@
   </properties>
 
   <dependencies>
-    <!-- Spark Java web framework -->
+    <!-- Spark Java -->
     <dependency>
       <groupId>com.sparkjava</groupId>
       <artifactId>spark-core</artifactId>
       <version>2.9.4</version>
     </dependency>
+
+    <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.36</version> <!-- or whatever version matches -->
+      <version>1.7.36</version>
     </dependency>
-    <!-- Gson (for JSON serialization) -->
+
+    <!-- JSON -->
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
       <version>2.10</version>
     </dependency>
+
+    <!-- Email -->
     <dependency>
       <groupId>com.sun.mail</groupId>
       <artifactId>javax.mail</artifactId>
       <version>1.6.2</version>
     </dependency>
 
-    <!-- MySQL JDBC Driver -->
+    <!-- MySQL Driver -->
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
@@ -46,7 +51,7 @@
 
   <build>
     <plugins>
-      <!-- 1) Compiler plugin to enforce Java 17 -->
+      <!-- Java 17 compiler -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -57,7 +62,7 @@
         </configuration>
       </plugin>
 
-      <!-- 2) Exec plugin: run App.java directly -->
+      <!-- Execute Java Main -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
