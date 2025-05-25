@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Tableau de bord</title>
+</head>
+<body>
+    <h1>Bienvenue sur votre tableau de bord</h1>
+    <nav>
+        <ul>
+            <li><a href="/add_child.html">Ajouter un enfant</a></li>
+            <li><a href="/admission.html">Demande d'admission</a></li>
+            <li><a href="/logout">Déconnexion</a></li>
+        </ul>
+    </nav>
+
+    <section id="children-list">
+        <h2>Vos enfants inscrits</h2>
+        <!-- You can dynamically load the list of children here -->
+        <ul id="children">
+            <!-- Example static entry -->
+            <!-- <li>Jean Dupont - 3 ans - Allergies: Aucune</li> -->
+        </ul>
+    </section>
+</body>
+</html>

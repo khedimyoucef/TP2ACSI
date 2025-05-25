@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Ajouter un enfant</title>
+</head>
+<body>
+    <h1>Ajouter un enfant</h1>
+    <form method="POST" action="/children">
+        <label>Nom complet:</label><br/>
+        <input type="text" name="name" required/><br/>
+        <label>Date de naissance:</label><br/>
+        <input type="date" name="dob" required/><br/>
+        <label>Allergies:</label><br/>
+        <textarea name="allergies" placeholder="Précisez les allergies (sinon laissez vide)"></textarea><br/>
+        <label>Besoins particuliers:</label><br/>
+        <textarea name="special_needs" placeholder="Précisez les besoins particuliers"></textarea><br/>
+        <button type="submit">Ajouter</button>
+    </form>
+    <p><a href="/dashboard.html">Retour au tableau de bord</a></p>
+</body>
+</html>

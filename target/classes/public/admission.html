@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Demande d'admission</title>
+</head>
+<body>
+    <h1>Soumettre une demande d'admission</h1>
+    <form method="POST" action="/admissions">
+        <p>Confirmez la demande d'admission pour votre/vos enfant(s).</p>
+        <!-- You can populate children dynamically -->
+        <label>Choisir un enfant :</label><br/>
+        <select name="child_id" required>
+            <!-- Example static options -->
+            <!-- <option value="1">Jean Dupont</option> -->
+        </select><br/><br/>
+        <button type="submit">Soumettre la demande</button>
+    </form>
+    <p><a href="/dashboard.html">Retour au tableau de bord</a></p>
+</body>
+</html>
