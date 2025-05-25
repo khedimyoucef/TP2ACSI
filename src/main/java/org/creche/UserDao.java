@@ -10,11 +10,12 @@ public class UserDao {
     }
 
     public void save(User user) throws SQLException {
-        String sql = "INSERT INTO users(username, password_hash, role) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO users(username, password_hash, role, email) VALUES (?, ?, ?, ?)";
         PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         ps.setString(1, user.getUsername());
         ps.setString(2, user.getPasswordHash());
         ps.setString(3, user.getRole());
+        ps.setString(4, user.getEmail()); // This works now because email is in the SQL!
         ps.executeUpdate();
         ResultSet rs = ps.getGeneratedKeys();
         if (rs.next()) {
@@ -22,6 +23,7 @@ public class UserDao {
         }
         ps.close();
     }
+    
 
     public User findByUsername(String username) throws SQLException {
         String sql = "SELECT * FROM users WHERE username = ?";

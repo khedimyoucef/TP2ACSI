@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Modifier l'enfant</title>
+  <style>
+    body { font-family: sans-serif; background: #f2f2f2; padding: 20px; }
+    form { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px; }
+    label { display: block; margin-top: 10px; }
+    input, textarea { width: 100%; padding: 8px; margin-top: 4px; }
+    
+    /* New style for buttons container */
+    .buttons-container {
+      display: flex;
+      justify-content: space-between; /* push buttons left and right */
+      margin-top: 15px;
+      gap: 10px;
+    }
+    
+    /* Button styling similar to dashboard */
+    button {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: 1px solid #2e86de;
+      background-color: #2e86de;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      flex: 1; /* make buttons take equal width */
+    }
+    
+    button[type="button"] {
+      background-color: #ccc;
+      border-color: #bbb;
+      color: #333;
+    }
+
+    button:hover {
+      background-color: #2167b9;
+      border-color: #1b4f87;
+    }
+    
+    button[type="button"]:hover {
+      background-color: #999;
+      border-color: #888;
+    }
+  </style>
+</head>
+<body>
+  <h2 style="text-align: center;">Modifier les informations de l’enfant</h2>
+  <form id="updateForm">
+    <label>Nom:
+      <input type="text" name="name" required />
+    </label>
+    <label>Date de naissance:
+      <input type="date" name="birthdate" required />
+    </label>
+    <label>Allergies:
+      <input type="text" name="allergies" />
+    </label>
+    <label>Besoins particuliers:
+      <textarea name="special_needs"></textarea>
+    </label>
+
+    <!-- Buttons wrapped in flex container -->
+    <div class="buttons-container">
+      <button type="submit">Mettre à jour</button>
+      <button type="button" onclick="window.history.back()">Retour</button>
+    </div>
+  </form>
+
+  <script>
+    const childId = new URLSearchParams(window.location.search).get('id');
+
+    fetch(`/api/children/${childId}`)
+      .then(res => res.json())
+      .then(child => {
+        document.querySelector('[name="name"]').value = child.name;
+        document.querySelector('[name="birthdate"]').value = child.birthdate;
+        document.querySelector('[name="allergies"]').value = child.allergies || "";
+        document.querySelector('[name="special_needs"]').value = child.special_needs || "";
+      });
+
+    document.getElementById("updateForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        name: form.name.value,
+        birthdate: form.birthdate.value,
+        allergies: form.allergies.value,
+        special_needs: form.special_needs.value,
+      };
+
+      const res = await fetch(`/api/children/${childId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      if (res.ok) {
+        alert("Informations mises à jour !");
+        window.location.href = "/dashboard.html";
+      } else {
+        alert("Erreur lors de la mise à jour");
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,104 +1,168 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <title>Tableau de bord Admin</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #6dd5ed, #2193b0);
-      margin: 0;
-      padding: 40px 20px;
-      color: #333;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tableau de bord Admin</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #6dd5ed, #2193b0);
+        margin: 0;
+        padding: 40px 20px;
+        color: #333;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
 
-    h1 {
-      color: #fff;
-      text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
-      margin-bottom: 30px;
-    }
+      .header {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1100px;
+        margin-bottom: 30px;
+      }
 
-    ul#admissionsList {
-      list-style: none;
-      padding: 0;
-      width: 100%;
-      max-width: 1100px;
-    }
+      h1 {
+        color: #fff;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+      }
 
-    li.card {
-      background-color: white;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-    }
+      .logout-button {
+        background-color: #2193b0;
+        color: white;
+        padding: 10px 18px;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+      }
 
-    .info-line {
-      margin: 6px 0;
-    }
+      .logout-button:hover {
+        background-color: #186982;
+      }
 
-    .info-line strong {
-      display: inline-block;
-      width: 150px;
-      color: #2193b0;
-    }
+      ul#admissionsList {
+        list-style: none;
+        padding: 0;
+        width: 100%;
+        max-width: 1100px;
+      }
 
-    button {
-      background-color: #2193b0;
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background-color 0.3s ease;
-    }
+      li.card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      }
 
-    button:hover {
-      background-color: #186982;
-    }
+      .info-line {
+        margin: 6px 0;
+      }
 
-    form {
-      margin-top: 15px;
-    }
-  </style>
-</head>
-<body>
-  <h1>Admissions</h1>
-  <ul id="admissionsList"></ul>
+      .info-line strong {
+        display: inline-block;
+        width: 150px;
+        color: #2193b0;
+      }
 
-  <script>
-    fetch("/api/admissions")
-      .then((res) => res.json())
-      .then((admissions) => {
-        const list = document.querySelector("#admissionsList");
-        admissions.forEach((a) => {
-          const li = document.createElement("li");
-          li.classList.add("card");
+      button {
+        background-color: #2193b0;
+        color: white;
+        border: none;
+        padding: 8px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+      }
 
-          li.innerHTML = `
-            <div class="info-line"><strong>Parent:</strong> ${a.parent_username}</div>
-            <div class="info-line"><strong>Child Name:</strong> ${a.child_name}</div>
-            <div class="info-line"><strong>Birthdate:</strong> ${a.birthdate}</div>
-            <div class="info-line"><strong>Allergies:</strong> ${a.allergies || "-"}</div>
-            <div class="info-line"><strong>Special Needs:</strong> ${a.special_needs || "-"}</div>
-            <div class="info-line"><strong>Status:</strong> ${a.status}</div>
-            <div class="info-line"><strong>Requested At:</strong> ${a.requested_at}</div>
-            ${
-              a.status === "pending"
-                ? `<form method="POST" action="/api/admissions/${a.id}/approve">
-                    <button type="submit">Approuver</button>
-                   </form>`
-                : ""
-            }
-          `;
-          list.appendChild(li);
+      button:hover {
+        background-color: #186982;
+      }
+
+      form {
+        margin-top: 15px;
+      }
+
+li.card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  position: relative; /* Important for positioning the X */
+}
+
+.delete-form {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #e74c3c;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.delete-btn:hover {
+  color: #c0392b;
+}
+
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Admissions</h1>
+      <a href="/logout" class="logout-button">Déconnexion</a>
+    </div>
+
+    <ul id="admissionsList"></ul>
+
+    <script>
+      fetch("/api/admissions")
+        .then((res) => res.json())
+        .then((admissions) => {
+          const list = document.querySelector("#admissionsList");
+          admissions.forEach((a) => {
+            const li = document.createElement("li");
+            li.classList.add("card");
+            li.innerHTML = `
+  <form method="POST" action="/api/admissions/${
+    a.id
+  }/delete" onsubmit="return confirm('Supprimer cette admission ?');" class="delete-form">
+    <button type="submit" class="delete-btn">&times;</button>
+  </form>
+  <div class="info-line"><strong>Parent:</strong> ${a.parent_username}</div>
+  <div class="info-line"><strong>Child Name:</strong> ${a.child_name}</div>
+  <div class="info-line"><strong>Birthdate:</strong> ${a.birthdate}</div>
+  <div class="info-line"><strong>Allergies:</strong> ${a.allergies || "-"}</div>
+  <div class="info-line"><strong>Special Needs:</strong> ${
+    a.special_needs || "-"
+  }</div>
+  <div class="info-line"><strong>Status:</strong> ${a.status}</div>
+  <div class="info-line"><strong>Requested At:</strong> ${a.requested_at}</div>
+  ${
+    a.status === "pending"
+      ? `<form method="POST" action="/api/admissions/${a.id}/approve" style="display:inline;">
+          <button type="submit">Approuver</button>
+         </form>
+         <form method="POST" action="/api/admissions/${a.id}/reject" style="display:inline;">
+          <button type="submit" style="background-color: crimson;">Rejeter</button>
+         </form>`
+      : ""
+  }
+`;
+            list.appendChild(li);
+          });
         });
-      });
-  </script>
-</body>
+    </script>
+  </body>
 </html>

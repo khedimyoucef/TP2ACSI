@@ -85,4 +85,12 @@ public class AdmissionDao {
         ps.executeUpdate();
         ps.close();
     }
+    public void delete(int admissionId) throws SQLException {
+        String sql = "DELETE FROM admissions WHERE id = ?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, admissionId);
+        ps.executeUpdate();
+        ps.close();
+    }
+    
 }

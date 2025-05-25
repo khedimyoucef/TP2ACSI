@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import spark.Session;
 import static spark.Spark.before;
 import static spark.Spark.get;
+import static spark.Spark.patch;
 import static spark.Spark.port;
 import static spark.Spark.post;
 import static spark.Spark.staticFiles;
@@ -48,11 +49,12 @@ public class App {
         post("/register", (req, res) -> {
             String username = req.queryParams("username");
             String password = req.queryParams("password");
+            String email = req.queryParams("email");
             if (userDao.findByUsername(username) != null) {
                 res.status(400);
                 return "User already exists";
             }
-            User user = new User(username, User.hashPassword(password), "parent");
+            User user = new User(username, User.hashPassword(password), "parent", email);
             userDao.save(user);
             res.redirect("/login.html");
             return "";
@@ -171,14 +173,13 @@ public class App {
                 res.status(403);
                 return "Access denied";
             }
-        
+
             List<Map<String, Object>> enriched = admissionDao.findAllWithDetails();
-        
+
             res.type("application/json");
             System.out.println("********************Enriched admissions: ********************" + enriched);
             return gson.toJson(enriched);
         });
-        
 
         // Admin: Approve admission
         post("/api/admissions/:id/approve", (req, res) -> {
@@ -192,5 +193,56 @@ public class App {
             res.redirect("/admin_dashboard.html");
             return "";
         });
+        // Admin: Delete admission
+        post("/api/admissions/:id/delete", (req, res) -> {
+            User user = req.session().attribute("user");
+            if (user == null || !"admin".equals(user.getRole())) {
+                res.status(403);
+                return "Access denied";
+            }
+
+            int admissionId = Integer.parseInt(req.params("id"));
+            admissionDao.delete(admissionId);
+            res.redirect("/admin_dashboard.html");
+            return "";
+        });
+
+        // Admin: Reject admission
+        post("/api/admissions/:id/reject", (req, res) -> {
+            User user = req.session().attribute("user");
+            if (user == null || !"admin".equals(user.getRole())) {
+                res.status(403);
+                return "Access denied";
+            }
+
+            int admissionId = Integer.parseInt(req.params("id"));
+            admissionDao.updateStatus(admissionId, "rejected");
+            res.redirect("/admin_dashboard.html");
+            return "";
+        });
+
+        // Update child information
+        patch("/api/children/:id", (req, res) -> {
+            User user = req.session().attribute("user");
+            if (user == null) {
+                res.status(401);
+                return "Not logged in";
+            }
+
+            int childId = Integer.parseInt(req.params("id"));
+            Child existing = childDao.findById(childId);
+
+            if (existing == null || existing.getUserId() != user.getId()) {
+                res.status(403);
+                return "Unauthorized";
+            }
+
+            Child updated = gson.fromJson(req.body(), Child.class);
+            updated.setId(childId);
+            updated.setUserId(user.getId());
+            childDao.update(updated);
+            return "Updated";
+        });
+
     }
 }

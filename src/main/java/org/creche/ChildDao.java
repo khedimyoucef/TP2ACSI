@@ -67,6 +67,18 @@ public class ChildDao {
         return null;
     }
     
+    public void update(Child child) throws SQLException {
+        String sql = "UPDATE children SET name = ?, birthdate = ?, allergies = ?, special_needs = ? WHERE id = ? AND user_id = ?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1, child.getName());
+        ps.setString(2, child.getBirthdate());
+        ps.setString(3, child.getAllergies());
+        ps.setString(4, child.getSpecialNeeds());
+        ps.setInt(5, child.getId());
+        ps.setInt(6, child.getUserId());
+        ps.executeUpdate();
+        ps.close();
+    }
     
 
 }
