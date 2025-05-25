@@ -3,6 +3,73 @@
 <head>
     <meta charset="UTF-8" />
     <title>Tableau de bord</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f4f8;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        nav {
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: 0 auto 30px auto;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #2e86de;
+            font-weight: bold;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            background-color: #2167b9;
+            color: white;
+        }
+
+        #children-list {
+            background-color: white;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        #children {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        #children li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            color: #555;
+        }
+
+        #children li:last-child {
+            border-bottom: none;
+        }
+    </style>
 </head>
 <body>
     <h1>Bienvenue sur votre tableau de bord</h1>
