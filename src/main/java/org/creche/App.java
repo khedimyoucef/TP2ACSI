@@ -25,8 +25,8 @@ public class App {
 
         Connection conn = DriverManager.getConnection(
             "jdbc:mysql://localhost:3306/creche_db?useSSL=false",
-            "youcef",
-            "youcef16032005"
+            "root",
+            "12345678"
         );
 
         userDao = new UserDao(conn);
